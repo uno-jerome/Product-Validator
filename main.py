@@ -85,7 +85,7 @@ def build_ui() -> None:
         with ui.row().classes("w-full items-center justify-between"):
             with ui.column().classes("gap-0"):
                 ui.label("Product Code Validator").classes("text-2xl font-bold text-white")
-                ui.label("What's your DFA — COM243 Simulator").classes("text-[13px] text-slate-400")
+                ui.label("What's your DFA").classes("text-xs text-slate-400 font-medium tracking-wide mt-0.5")
             with ui.row().classes("items-center cursor-pointer px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 transition-all hover:bg-emerald-500/20") as db_button:
                 db_dot = ui.html('<span class="w-2 h-2 rounded-full bg-emerald-400 mr-2 inline-block"></span>')
                 db_label = ui.label("DATABASE CONNECTED").classes("font-mono text-xs font-semibold tracking-wide")
@@ -101,14 +101,14 @@ def build_ui() -> None:
         with ui.tab_panels(tabs, value=scanner_tab).classes("w-full bg-transparent"):
             with ui.tab_panel(scanner_tab).classes("gap-4"):
                 with ui.card().classes(PANEL_CLASSES):
-                    with ui.row().classes("w-full items-end gap-3"):
+                    with ui.row().classes("w-full items-center gap-3 mb-3"):
                         code_input = ui.input(
                             "Product code",
                             placeholder="e.g. IT-2026-001",
                             value="IT-2026-001",
-                        ).props("outlined dense").classes(f"flex-1 w-full font-mono {INPUT_CLASSES}")
+                        ).props("outlined dense").classes("flex-grow font-mono")
                         scan_button = ui.button("SCAN & VALIDATE", color="indigo").classes(
-                            "bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-lg px-6"
+                            "bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-6 rounded-lg text-sm transition h-[40px] flex items-center justify-center"
                         )
                     with ui.row().classes("w-full flex-wrap gap-2 pt-2"):
                         quick_tests = {
@@ -173,11 +173,13 @@ def build_ui() -> None:
                         preview_panel = ui.column().classes("w-full bg-slate-900 border border-slate-800 rounded-xl p-8 items-center justify-center text-center")
 
             with ui.tab_panel(catalog_tab).classes("gap-4"):
-                with ui.row().classes("w-full items-center justify-between"):
-                    ui.label("INVENTORY CATALOG").classes("text-xl font-bold")
-                    with ui.row().classes("items-center gap-2"):
-                        catalog_count = ui.badge("0 products")
-                        refresh_catalog_button = ui.button("Refresh", color="indigo")
+                with ui.row().classes("w-full items-center justify-between mb-4"):
+                    with ui.row().classes("items-baseline gap-2"):
+                        ui.label("INVENTORY CATALOG").classes("text-sm font-bold text-slate-200 tracking-wider")
+                        count_label = ui.label("(0 items)").classes("text-xs font-mono text-slate-500")
+                    refresh_catalog_button = ui.button("REFRESH").props("flat dense").classes(
+                        "text-xs font-semibold text-indigo-400 hover:text-indigo-300 border border-slate-800 px-3 py-1 rounded"
+                    )
                 catalog_search = ui.input(
                     placeholder="Filter products by name or code..."
                 ).props("outlined dense").classes(f"w-full {INPUT_CLASSES}")
@@ -290,8 +292,8 @@ def build_ui() -> None:
 
     def render_catalog() -> None:
         inventory_table.update_rows(format_catalog_rows(filter_catalog()))
-        catalog_count.text = f"{len(catalog_rows)} products"
-        catalog_count.update()
+        count_label.text = f"({len(catalog_rows)} items)"
+        count_label.update()
 
     def update_catalog() -> None:
         nonlocal catalog_rows
