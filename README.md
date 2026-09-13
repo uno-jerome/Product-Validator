@@ -18,7 +18,7 @@ CS-2026-104
 HR-2024-999
 ```
 
-In plain terms, a code has a two-letter product category, a four-digit year or batch value, and a three-digit serial number. The supported categories are `IT` (IT Equipment), `EL` (Electronics), `PR` (Peripherals), `NW` (Networking), and `OF` (Office Hardware). The DFA accepts the code only when every character appears in the right place.
+In simple terms, a code has a two-letter product category, a four-digit year or batch value, and a three-digit serial number. The supported categories are `IT` (IT Equipment), `EL` (Electronics), `PR` (Peripherals), `NW` (Networking), and `OF` (Office Hardware). The DFA accepts the code only when every character appears in the right place.
 
 ## Features
 

@@ -27,10 +27,41 @@ CATEGORY_OPTIONS = [
 def build_ui() -> None:
     """Build scanner, registration, and inventory workflows."""
     ui.dark_mode().enable()
+    ui.add_head_html(
+        """
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <!-- Inter & JetBrains Mono Fonts -->
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+        <!-- Google Material Icons -->
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <style>
+            body, * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+            .font-mono, .code-text, code, pre { font-family: 'JetBrains Mono', monospace !important; }
+            .q-field--standard .q-field__control:before,
+            .q-field--standard .q-field__control:after,
+            .q-field--filled .q-field__control:before,
+            .q-field--filled .q-field__control:after {
+                display: none !important;
+            }
+            .q-field__bottom { display: none !important; }
+            .q-table th {
+                color: #94a3b8 !important;
+                font-weight: 600 !important;
+                font-size: 0.75rem !important;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+            }
+            .q-table td { color: #e2e8f0 !important; font-size: 0.875rem !important; }
+            .q-table tbody tr:hover { background: rgba(30, 41, 59, 0.6) !important; }
+        </style>
+        """,
+        shared=True,
+    )
     dfa = MinimizedDFA()
     generator = ProductCodeGenerator()
 
-    with ui.column().classes("w-full min-h-screen bg-slate-950 p-6 font-mono"):
+    with ui.column().classes("w-full min-h-screen bg-slate-950 p-6"):
         with ui.row().classes("w-full items-center justify-between"):
             with ui.column().classes("gap-0"):
                 ui.label("Product Code Validator").classes("text-2xl font-bold text-white")
@@ -54,7 +85,7 @@ def build_ui() -> None:
                             "Product code",
                             placeholder="e.g. IT-2026-001",
                             value="IT-2026-001",
-                        ).classes(f"flex-1 font-mono {INPUT_CLASSES}")
+                        ).props("outlined dense").classes(f"flex-1 w-full font-mono {INPUT_CLASSES}")
                         scan_button = ui.button("Scan & Validate", color="indigo").classes(
                             "font-semibold"
                         )
@@ -68,17 +99,22 @@ def build_ui() -> None:
                         }
                         for label, handler in quick_tests.items():
                             ui.button(label, on_click=handler).classes(
-                                "bg-slate-800 text-xs text-slate-300"
+                                "bg-slate-850 hover:bg-slate-800 text-slate-300 border border-slate-700 text-xs px-3 py-1 rounded-full font-medium transition-colors"
                             )
 
-                with ui.card().classes(PANEL_CLASSES):
+                with ui.card().classes(
+                    "w-full border-dashed border-2 border-slate-800 bg-slate-900/40 rounded-xl p-4 flex items-center justify-center"
+                ):
                     ui.label("DFA TAPE SCANNER").classes("text-sm font-bold text-slate-400")
+                    ui.icon("terminal", size="2rem").classes("text-slate-600")
                     tape_row = ui.row().classes("w-full flex-nowrap gap-2 overflow-x-auto py-3")
                     trace_row = ui.row().classes("w-full flex-nowrap gap-2 overflow-x-auto")
                     with trace_row:
-                        ui.label(
-                            "Awaiting input. Click 'Scan & Validate' to trace state transitions."
-                        ).classes("text-sm text-slate-500")
+                        with ui.column().classes("w-full items-center justify-center py-6 text-slate-500 gap-1"):
+                            ui.icon("terminal", size="2rem").classes("text-slate-600")
+                            ui.label(
+                                "Awaiting input. Enter a code or click a test case above to trace state transitions."
+                            ).classes("text-xs text-slate-400")
 
                 scanner_status = ui.column().classes("w-full")
                 product_details = ui.column().classes("w-full")
@@ -95,20 +131,20 @@ def build_ui() -> None:
                         ],
                         rows=[],
                         row_key="id",
-                    ).classes("w-full bg-transparent")
+                    ).classes("w-full bg-transparent font-mono")
 
             with ui.tab_panel(register_tab).classes("min-h-96 items-center justify-center gap-4"):
-                with ui.card().classes(f"w-full max-w-xl {PANEL_CLASSES}"):
+                with ui.card().classes(f"w-full max-w-lg gap-4 {PANEL_CLASSES}"):
                     ui.label("REGISTER NEW PRODUCT").classes("text-lg font-bold")
-                    product_name = ui.input("Product Name").classes(f"w-full {INPUT_CLASSES}")
-                    price = ui.number("Price in PHP", min=0, precision=2).classes(
+                    product_name = ui.input("Product Name").props("outlined dense").classes(f"w-full {INPUT_CLASSES}")
+                    price = ui.number("Price in PHP", min=0, precision=2).props("outlined dense").classes(
                         f"w-full {INPUT_CLASSES}"
                     )
                     category = ui.select(
                         CATEGORY_OPTIONS,
                         label="Category",
                         value=CATEGORY_OPTIONS[0],
-                    ).classes(f"w-full {INPUT_CLASSES}")
+                    ).props("outlined dense options-dense").classes(f"w-full {INPUT_CLASSES}")
                     register_button = ui.button(
                         "Generate Code & Register Product", color="positive"
                     ).classes("w-full font-semibold")
@@ -122,7 +158,7 @@ def build_ui() -> None:
                         refresh_catalog_button = ui.button("Refresh", color="indigo")
                 catalog_search = ui.input(
                     placeholder="Filter products by name or code..."
-                ).classes(f"w-full {INPUT_CLASSES}")
+                ).props("outlined dense").classes(f"w-full {INPUT_CLASSES}")
                 inventory_table = ui.table(
                     columns=[
                         {"name": "id", "label": "ID", "field": "id"},
@@ -135,7 +171,7 @@ def build_ui() -> None:
                     ],
                     rows=[],
                     row_key="id",
-                ).classes("w-full bg-slate-900 border border-slate-800 rounded-xl")
+                ).classes("w-full bg-slate-900 border border-slate-800 rounded-xl font-mono")
                 inventory_table.add_slot(
                     "body-cell-actions",
                     """
@@ -160,15 +196,30 @@ def build_ui() -> None:
         )
         db_button.update()
 
-    def refresh_connection(show_notification: bool = False) -> None:
-        started = time.perf_counter()
+    def refresh_connection() -> None:
         connected = db.test_connection()
-        latency_ms = (time.perf_counter() - started) * 1000
         set_connection_state(connected)
-        if show_notification:
+
+    def on_db_badge_click() -> None:
+        started = time.perf_counter()
+        is_up = db.test_connection()
+        milliseconds = int((time.perf_counter() - started) * 1000)
+        set_connection_state(is_up)
+        if is_up:
             ui.notify(
-                f"Database {'connected' if connected else 'offline'} - {latency_ms:.0f} ms",
-                type="positive" if connected else "negative",
+                f"Database connected ({milliseconds} ms)",
+                type="positive",
+                icon="check_circle",
+                position="bottom-right",
+                timeout=2500,
+            )
+        else:
+            ui.notify(
+                "Database connection failed",
+                type="negative",
+                icon="error",
+                position="bottom-right",
+                timeout=2500,
             )
 
     def refresh_telemetry() -> None:
@@ -281,14 +332,11 @@ def build_ui() -> None:
                     ui.label(f"{name} | {category_code} | ₱{float(amount):,.2f}")
             update_catalog()
             refresh_telemetry()
-            ui.notify("Product registered", type="positive")
+            ui.notify("Product registered", type="positive", timeout=2500)
         else:
             with register_result:
                 ui.label("Product could not be registered in the database.").classes("text-rose-300")
         refresh_connection()
-
-    async def check_connection() -> None:
-        refresh_connection(show_notification=True)
 
     async def scan_catalog_code(code: str) -> None:
         set_code(code)
@@ -299,9 +347,9 @@ def build_ui() -> None:
     def delete_catalog_product(product_id: int) -> None:
         if db.delete_product(product_id):
             update_catalog()
-            ui.notify("Product deleted", type="positive")
+            ui.notify("Product deleted", type="positive", timeout=2500)
         else:
-            ui.notify("Product could not be deleted", type="negative")
+            ui.notify("Product could not be deleted", type="negative", timeout=2500)
 
     async def handle_scan_event(event: Any) -> None:
         await scan_catalog_code(str(event.args))
@@ -309,7 +357,7 @@ def build_ui() -> None:
     def handle_delete_event(event: Any) -> None:
         delete_catalog_product(int(event.args))
 
-    db_button.on_click(check_connection)
+    db_button.on_click(on_db_badge_click)
     inventory_table.on("scan-code", handle_scan_event)
     inventory_table.on("delete-product", handle_delete_event)
     catalog_search.on_value_change(lambda _: render_catalog())
