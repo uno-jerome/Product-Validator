@@ -1,8 +1,7 @@
-# Product Code Validator - What's your DFA
+# Product Code Validator — What's your DFA
 > **COM243**  
-> Desktop Inventory Management & Minimized DFA Simulator
 
-A native desktop application built with Python, NiceGUI, and MySQL that validates structured inventory product codes using a formally defined and minimized Deterministic Finite Automaton (DFA)[cite: 1].
+A native desktop application built with Python, NiceGUI, and MySQL that validates structured inventory product codes using a formally defined and minimized Deterministic Finite Automaton (DFA)
 
 ---
 
@@ -16,12 +15,12 @@ $$\text{Format: } [A\text{-}Z]^2 - [0\text{-}9]^4 - [0\text{-}9]^3 \quad (\text{
 $$R = ([A\text{-}Z][A\text{-}Z]) \cdot '-' \cdot ([0\text{-}9][0\text{-}9][0\text{-}9][0\text{-}9]) \cdot '-' \cdot ([0\text{-}9][0\text{-}9][0\text{-}9])$$
 
 ### Formal 5-Tuple DFA Definition
-The validator is formally defined as $M = (Q, \Sigma, \delta, q_0, F)$[cite: 1]:
-* **States ($Q$):** $\{q_0, q_1, q_2, q_3, q_4, q_5, q_6, q_7, q_8, q_9, q_{10}, q_{11}, q_{\text{trap}}\}$[cite: 1]
-* **Alphabet ($\Sigma$):** $\{A\dots Z\} \cup \{0\dots 9\} \cup \{'-'\}$ ($|\Sigma| = 37$)[cite: 1]
-* **Initial State:** $q_0$[cite: 1]
-* **Accepting / Final State ($F$):** $\{q_{11}\}$[cite: 1]
-* **Transition Function ($\delta$):** Pure dictionary lookup transition table mapping $(q_i, \sigma) \to q_{i+1}$[cite: 1]. Any symbol not in $\Sigma$ or unexpected at state $q_i$ transitions to $q_{\text{trap}}$[cite: 1].
+The validator is formally defined as $M = (Q, \Sigma, \delta, q_0, F)$:
+* **States ($Q$):** $\{q_0, q_1, q_2, q_3, q_4, q_5, q_6, q_7, q_8, q_9, q_{10}, q_{11}, q_{\text{trap}}\}$
+* **Alphabet ($\Sigma$):** $\{A\dots Z\} \cup \{0\dots 9\} \cup \{'-'\}$ ($|\Sigma| = 37$)
+* **Initial State:** $q_0$
+* **Accepting / Final State ($F$):** $\{q_{11}\}$
+* **Transition Function ($\delta$):** Pure dictionary lookup transition table mapping $(q_i, \sigma) \to q_{i+1}$. Any symbol not in $\Sigma$ or unexpected at state $q_i$ transitions to $q_{\text{trap}}$.
 
 ```text
   [A-Z]       [A-Z]        '-'        [0-9]       [0-9]       [0-9]       [0-9]        '-'        [0-9]       [0-9]       [0-9]
@@ -48,7 +47,7 @@ The validator is formally defined as $M = (Q, \Sigma, \delta, q_0, F)$[cite: 1]:
 
 * **Desktop Framework:** NiceGUI running in native desktop mode via `pywebview`.
 * **Database Layer:** PyMySQL connected to local MySQL (UniServer Zero XIII) on port `3306`.
-* **Automata Engine:** Pure state-transition dictionary lookups (`core/dfa_engine.py`) without regular expression libraries (`re`) or arithmetic operations[cite: 1].
+* **Automata Engine:** Pure state-transition dictionary lookups (`core/dfa_engine.py`) without regular expression libraries (`re`) or arithmetic operations.
 
 ```text
 Product-Validator/
@@ -71,13 +70,13 @@ Product-Validator/
 
 | Feature | Requirement Description | Implementation Detail |
 | :---: | :--- | :--- |
-| **1** | User Input Specification | Monospace text entry supporting structured alphanumeric tokens[cite: 1] |
-| **2** | Alphabet Validation ($\Sigma$) | Evaluates $\Sigma = \{A\text{-}Z\} \cup \{0\text{-}9\} \cup \{-\}$; flags alphabet violations directly[cite: 1] |
-| **3** | Symbol-by-Symbol Processing | Evaluates string iteratively using pure $\delta(q, c)$ transition lookups[cite: 1] |
-| **4** | State Transition Display | Step-by-step visual ticker tape showing $[c]: [q_i] \to [q_{i+1}]$[cite: 1] |
-| **5** | Final State Identification | Reports halting at accepting state $q_{11}$ or non-accepting $q_{\text{trap}}$[cite: 1] |
-| **6** | Accept/Reject Decision | High-contrast visual verdict (Emerald ACCEPT / Crimson REJECT)[cite: 1] |
-| **7** | Continuous Testing & Logging | Persistent execution history stored in MySQL `validation_logs`[cite: 1] |
+| **1** | User Input Specification | Monospace text entry supporting structured alphanumeric tokens |
+| **2** | Alphabet Validation ($\Sigma$) | Evaluates $\Sigma = \{A\text{-}Z\} \cup \{0\text{-}9\} \cup \{-\}$; flags alphabet violations directly |
+| **3** | Symbol-by-Symbol Processing | Evaluates string iteratively using pure $\delta(q, c)$ transition lookups |
+| **4** | State Transition Display | Step-by-step visual ticker tape showing $[c]: [q_i] \to [q_{i+1}]$ |
+| **5** | Final State Identification | Reports halting at accepting state $q_{11}$ or non-accepting $q_{\text{trap}}$ |
+| **6** | Accept/Reject Decision | High-contrast visual verdict (Emerald ACCEPT / Crimson REJECT) |
+| **7** | Continuous Testing & Logging | Persistent execution history stored in MySQL `validation_logs` |
 
 ---
 
@@ -133,7 +132,7 @@ python main.py
 ```
 
 ### Automated Unit Tests
-Verify the Minimized DFA against valid strings, syntax violations, and alphabet errors without launching the UI[cite: 1]:
+Verify the Minimized DFA against valid strings, syntax violations, and alphabet errors without launching the UI:
 ```bash
 pytest tests/test_dfa.py -v
 ```
@@ -144,14 +143,14 @@ pytest tests/test_dfa.py -v
 
 1. **Scanner & Lookup:**
    * Enter a code manually or click a quick-test helper button (`Valid Code`, `Prefix Error`, `Year Error`, `Dash Error`, `Alphabet Error`).
-   * Click **SCAN & VALIDATE** to trace the input through the DFA transition dictionary[cite: 1].
-   * If `ACCEPTED`, the application searches MySQL to retrieve registration details or displays an unregistered status note[cite: 1].
-   * All evaluations are logged to the **Validation History** table[cite: 1].
+   * Click **SCAN & VALIDATE** to trace the input through the DFA transition dictionary.
+   * If `ACCEPTED`, the application searches MySQL to retrieve registration details or displays an unregistered status note.
+   * All evaluations are logged to the **Validation History** table.
 
 2. **Register Product:**
    * Enter Product Name, select a Category (`IT`, `EL`, `PR`, `NW`, `OF`), and set Price.
    * View live formatting inside the **Live Asset Tag Preview**.
-   * Click **GENERATE CODE & REGISTER PRODUCT** to create a collision-free code, validate it with the DFA engine, and persist it to MySQL[cite: 1].
+   * Click **GENERATE CODE & REGISTER PRODUCT** to create a collision-free code, validate it with the DFA engine, and persist it to MySQL.
 
 3. **Inventory Catalog:**
    * Search, filter, and paginate through registered assets.
