@@ -81,7 +81,7 @@ def save_log(
 				pass
 
 
-def get_recent_logs(limit: int = 10) -> list[dict]:
+def get_recent_logs(limit: int = 50) -> list[dict]:
 	"""Return the newest validation records, or an empty list on failure."""
 	if not isinstance(limit, int) or isinstance(limit, bool) or limit < 1:
 		return []

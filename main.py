@@ -147,7 +147,7 @@ def build_ui() -> None:
                 with ui.card().classes(
                     "w-full border-dashed border border-slate-800 bg-slate-900/40 rounded-xl p-6 text-center text-slate-500 text-xs"
                 ):
-                    ui.label("DFA TAPE SCANNER").classes("text-sm font-bold text-slate-400")
+                    ui.label("DFA TAPE SCANNER").classes("text-xs font-semibold text-slate-400 tracking-wider uppercase")
                     trace_row = ui.row().classes("w-full flex-wrap gap-2 no-scrollbar py-3")
                     with trace_row:
                         with ui.column().classes("w-full items-center justify-center py-6 text-slate-500 gap-1"):
@@ -159,7 +159,7 @@ def build_ui() -> None:
                 scan_result = ui.column().classes("w-full")
 
                 with ui.card().classes(PANEL_CLASSES):
-                    ui.label("Validation History").classes("text-sm font-semibold text-slate-300")
+                    ui.label("Validation History").classes("text-xs font-semibold text-slate-400 tracking-wider uppercase")
                     ui.label("Real-time automata verification telemetry").classes("text-xs text-slate-500")
                     audit_table = ui.table(
                         columns=[
@@ -171,32 +171,37 @@ def build_ui() -> None:
                         ],
                         rows=[],
                         row_key="id",
+                        pagination={"rowsPerPage": 10, "rowsPerPageOptions": [10, 25, 50], "sortBy": "id", "descending": True},
                     ).classes("w-full bg-transparent font-mono")
 
             with ui.tab_panel(register_tab).classes("gap-4"):
                 with ui.grid(columns=2).classes("grid grid-cols-1 md:grid-cols-2 gap-6 w-full"):
-                    with ui.card().classes(f"w-full gap-4 {PANEL_CLASSES}"):
-                        ui.label("REGISTER NEW PRODUCT").classes("text-lg font-bold")
-                        product_name = ui.input("Product Name").props("outlined dense").classes(f"w-full {INPUT_CLASSES}")
-                        category = ui.select(
-                            CATEGORY_OPTIONS,
-                            label="Category",
-                            value=CATEGORY_OPTIONS[0],
-                        ).props("outlined dense options-dense").classes(f"w-full {INPUT_CLASSES}")
-                        price = ui.number("Price in PHP", min=0, precision=2).props("outlined dense").classes(
-                            f"w-full {INPUT_CLASSES}"
-                        )
+                    with ui.card().classes(f"w-full {PANEL_CLASSES} p-6"):
+                        ui.label("REGISTER NEW PRODUCT").classes("text-xs font-semibold text-slate-400 tracking-wider uppercase")
+                        with ui.column().classes("w-full gap-3.5 mt-3"):
+                            with ui.column().classes("w-full gap-1"):
+                                ui.label("Product Name").classes("text-xs font-medium text-slate-300")
+                                product_name = ui.input(placeholder="e.g. Mechanical Keyboard").props("outlined dense").classes("w-full font-sans")
+                            with ui.column().classes("w-full gap-1"):
+                                ui.label("Category").classes("text-xs font-medium text-slate-300")
+                                category = ui.select(
+                                    CATEGORY_OPTIONS,
+                                    value=CATEGORY_OPTIONS[0],
+                                ).props("outlined dense options-dense").classes("w-full font-sans")
+                            with ui.column().classes("w-full gap-1"):
+                                ui.label("Price in PHP").classes("text-xs font-medium text-slate-300")
+                                price = ui.number(placeholder="0.00", value=None, format="%.2f").props("outlined dense").classes("w-full font-mono")
                         register_button = ui.button(
-                            "Generate Code & Register Product", color="indigo"
+                            "GENERATE CODE & REGISTER PRODUCT", color="indigo"
                         ).classes("bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2.5 rounded-lg w-full mt-2 transition text-sm")
                     with ui.card().classes(f"w-full {PANEL_CLASSES}"):
-                        ui.label("LIVE ASSET TAG PREVIEW").classes("text-sm font-semibold text-slate-400")
+                        ui.label("LIVE ASSET TAG PREVIEW").classes("text-xs font-semibold text-slate-400 tracking-wider uppercase")
                         preview_panel = ui.column().classes("w-full bg-slate-900 border border-slate-800 rounded-xl p-8 items-center justify-center text-center")
 
             with ui.tab_panel(catalog_tab).classes("gap-4"):
                 with ui.row().classes("w-full items-center justify-between mb-4"):
                     with ui.row().classes("items-baseline gap-2"):
-                        ui.label("INVENTORY CATALOG").classes("text-sm font-bold text-slate-200 tracking-wider")
+                        ui.label("INVENTORY CATALOG").classes("text-xs font-semibold text-slate-400 tracking-wider uppercase")
                         count_label = ui.label("(0 items)").classes("text-xs font-mono text-slate-500")
                     refresh_catalog_button = ui.button("REFRESH").props("flat dense").classes(
                         "text-xs font-semibold text-indigo-400 hover:text-indigo-300 border border-slate-800 px-3 py-1 rounded"
@@ -216,6 +221,7 @@ def build_ui() -> None:
                     ],
                     rows=[],
                     row_key="id",
+                    pagination={"rowsPerPage": 10, "rowsPerPageOptions": [10, 25, 50], "sortBy": "id", "descending": True},
                 ).props("flat bordered dense").classes("w-full bg-slate-900 border border-slate-800 rounded-xl font-mono")
                 inventory_table.add_slot(
                     "body-cell-actions",
@@ -291,7 +297,7 @@ def build_ui() -> None:
         )
 
     def refresh_telemetry() -> None:
-        audit_table.update_rows(db.get_recent_logs(10))
+        audit_table.update_rows(db.get_recent_logs(50))
 
     def set_code(value: str) -> None:
         code_input.value = value
