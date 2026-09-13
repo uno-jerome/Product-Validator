@@ -134,7 +134,7 @@ python main.py
 ### Automated Unit Tests
 Verify the Minimized DFA against valid strings, syntax violations, and alphabet errors without launching the UI:
 ```bash
-python -m pytest tests/test_dfa.py -v
+pytest tests/test_dfa.py -v
 ```
 
 ---
