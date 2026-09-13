@@ -122,15 +122,16 @@ def build_ui() -> None:
         with ui.tab_panels(tabs, value=scanner_tab).classes("w-full bg-transparent"):
             with ui.tab_panel(scanner_tab).classes("gap-4"):
                 with ui.card().classes(PANEL_CLASSES):
-                    with ui.row().classes("w-full items-center gap-3 mb-3"):
-                        code_input = ui.input(
-                            "Product code",
-                            placeholder="e.g. IT-2026-001",
-                            value="IT-2026-001",
-                        ).props("outlined dense").classes("flex-grow font-mono")
-                        scan_button = ui.button("SCAN & VALIDATE", color="indigo").classes(
-                            "bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-6 rounded-lg text-sm h-[40px] transition shadow-md shadow-indigo-950/50"
-                        )
+                    with ui.column().classes("w-full gap-1 mb-2"):
+                        ui.label("Product Code").classes("text-xs font-medium text-slate-300")
+                        with ui.row().classes("w-full items-center gap-3"):
+                            code_input = ui.input(
+                                placeholder="e.g. IT-2026-001",
+                                value="IT-2026-001",
+                            ).props("outlined dense").classes("flex-grow font-mono text-sm h-10")
+                            scan_button = ui.button("SCAN & VALIDATE", color="indigo").classes(
+                                "bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-6 rounded-lg text-xs h-10 transition tracking-wide shadow-md shadow-indigo-950/40"
+                            )
                     with ui.row().classes("w-full flex-wrap gap-2 pt-2"):
                         quick_tests = {
                             "Valid Code": lambda: set_code(generator.generate_code()),
@@ -372,8 +373,8 @@ def build_ui() -> None:
         with scan_result:
             with ui.card().classes(f"w-full {card_classes}"):
                 if result["is_valid"]:
-                    ui.label("VERDICT: ACCEPTED: Final State: q11").classes(
-                        "text-emerald-400 font-bold font-mono text-sm"
+                    ui.label("VERDICT: ACCEPTED — Final State: q11").classes(
+                        "text-emerald-400 font-mono font-bold text-sm"
                     )
                     if product is None:
                         ui.badge("NOT IN INVENTORY").classes(
@@ -384,9 +385,11 @@ def build_ui() -> None:
                         ).classes("text-slate-300 text-xs mt-1")
                     else:
                         with ui.row().classes("items-center gap-3 mt-2"):
-                            ui.label(product.get("product_name", "")).classes("font-bold text-white")
+                            ui.label(product.get("product_name", "")).classes(
+                                "text-base font-semibold text-white"
+                            )
                             ui.badge(product.get("category", "")).classes(
-                                "bg-indigo-900 text-indigo-200"
+                                "bg-slate-800 text-slate-300 font-mono text-xs font-medium px-2 py-0.5 rounded border border-slate-700 ml-2"
                             )
                         ui.label(f"Price: ₱{float(product.get('price', 0)):,.2f}").classes(
                             "font-mono text-slate-200"
