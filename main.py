@@ -14,7 +14,7 @@ from core.generator import ProductCodeGenerator
 
 
 PANEL_CLASSES = "w-full bg-slate-900 border border-slate-800 rounded-xl shadow-md"
-INPUT_CLASSES = "bg-slate-800 border border-slate-700 text-white rounded-lg p-2"
+INPUT_CLASSES = "bg-slate-800/70 text-white rounded-lg p-2"
 CATEGORY_OPTIONS = [
     "IT - IT Equipment",
     "EL - Electronics",
@@ -68,10 +68,31 @@ def build_ui() -> None:
                 letter-spacing: 0.05em;
             }
             .q-table th { background: #111827 !important; }
-            .q-table td { color: #e2e8f0 !important; font-size: 0.85rem !important; }
-            .q-table tbody tr:hover { background: rgba(30, 41, 59, 0.5) !important; }
+            .q-table td {
+                color: #e2e8f0 !important;
+                font-size: 0.85rem !important;
+                padding-top: 12px !important;
+                padding-bottom: 12px !important;
+                border-bottom: 1px solid rgba(30, 41, 59, 0.5) !important;
+            }
+            .q-table tbody td {
+                padding-top: 14px !important;
+                padding-bottom: 14px !important;
+                font-size: 0.85rem !important;
+                border-bottom: 1px solid rgba(30, 41, 59, 0.5) !important;
+            }
+            .q-table tbody tr { transition: background-color 0.2s ease; }
+            .q-table tbody tr:hover { background: rgba(30, 41, 59, 0.4) !important; }
             .q-tabs__arrow { display: none !important; }
             .q-tabs__content { overflow: visible !important; }
+            .q-notification {
+                background: #111827 !important;
+                color: #f8fafc !important;
+                border: 1px solid #334155 !important;
+                border-radius: 10px !important;
+                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.35) !important;
+            }
+            .q-notification__icon { color: #818cf8 !important; }
             .no-scrollbar::-webkit-scrollbar { height: 4px; }
             .no-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
         </style>
@@ -108,7 +129,7 @@ def build_ui() -> None:
                             value="IT-2026-001",
                         ).props("outlined dense").classes("flex-grow font-mono")
                         scan_button = ui.button("SCAN & VALIDATE", color="indigo").classes(
-                            "bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-6 rounded-lg text-sm transition h-[40px] flex items-center justify-center"
+                            "bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-6 rounded-lg text-sm h-[40px] transition shadow-md shadow-indigo-950/50"
                         )
                     with ui.row().classes("w-full flex-wrap gap-2 pt-2"):
                         quick_tests = {
@@ -120,7 +141,7 @@ def build_ui() -> None:
                         }
                         for label, handler in quick_tests.items():
                             ui.button(label, on_click=handler).classes(
-                                "bg-slate-850 hover:bg-slate-800 text-slate-300 text-xs px-3 py-1.5 rounded-md border border-slate-800 transition font-medium"
+                                "bg-[#111827] hover:bg-slate-800 text-slate-300 hover:text-white text-xs px-3.5 py-1.5 rounded-lg border border-slate-800 hover:border-indigo-500/50 transition font-medium"
                             )
 
                 with ui.card().classes(
@@ -236,19 +257,38 @@ def build_ui() -> None:
         if is_up:
             ui.notify(
                 f"Database connected ({milliseconds} ms)",
-                type="positive",
+                color="dark",
                 icon="check_circle",
                 position="bottom-right",
-                timeout=2500,
+                group=False,
+                timeout=2000,
+                close_button=False,
+                classes="bg-slate-900 text-slate-100 border border-slate-700 shadow-xl",
             )
         else:
             ui.notify(
                 "Database connection failed",
-                type="negative",
+                color="dark",
                 icon="error",
                 position="bottom-right",
-                timeout=2500,
+                group=False,
+                timeout=2000,
+                close_button=False,
+                classes="bg-slate-900 text-slate-100 border border-slate-700 shadow-xl",
             )
+
+    def notify_dark(message: str, icon: str | None = None) -> None:
+        """Show one short, non-grouped slate toast without competing with DFA colors."""
+        ui.notify(
+            message,
+            color="dark",
+            icon=icon,
+            group=False,
+            position="bottom-right",
+            timeout=2000,
+            close_button=False,
+            classes="bg-slate-900 text-slate-100 border border-slate-700 shadow-xl",
+        )
 
     def refresh_telemetry() -> None:
         audit_table.update_rows(db.get_recent_logs(10))
@@ -326,14 +366,16 @@ def build_ui() -> None:
         with scan_result:
             with ui.card().classes(f"w-full {card_classes}"):
                 if result["is_valid"]:
-                    ui.label("● VERDICT: ACCEPTED — Final State: q11").classes(
-                        "text-emerald-400 font-semibold"
+                    ui.label("VERDICT: ACCEPTED: Final State: q11").classes(
+                        "text-emerald-400 font-bold font-mono text-sm"
                     )
                     if product is None:
-                        ui.badge("[NOT IN INVENTORY]").classes("bg-slate-800 text-slate-300 font-mono")
+                        ui.badge("NOT IN INVENTORY").classes(
+                            "bg-slate-800 text-slate-100 font-mono text-xs font-semibold px-2.5 py-1 rounded border border-slate-700 tracking-wider"
+                        )
                         ui.label(
                             "Valid code syntax, but unregistered in inventory."
-                        ).classes("mt-2 text-slate-300 text-xs")
+                        ).classes("text-slate-300 text-xs mt-1")
                     else:
                         with ui.row().classes("items-center gap-3 mt-2"):
                             ui.label(product.get("product_name", "")).classes("font-bold text-white")
@@ -348,7 +390,7 @@ def build_ui() -> None:
                         )
                 else:
                     ui.label(
-                        f"✕ VERDICT: REJECTED — Halt State: {result['halt_state']}"
+                        f"✕ VERDICT: REJECTED: Halt State: {result['halt_state']}"
                     ).classes("text-rose-300 font-semibold")
                     ui.label(result["error"] or "Unknown validation error").classes(
                         "mt-2 text-rose-100"
@@ -370,16 +412,16 @@ def build_ui() -> None:
         amount = price.value
         category_code = parse_category(str(category.value or ""))
         if not name or amount is None:
-            ui.notify("Enter a product name and price.", type="warning", timeout=2500)
+            notify_dark("Enter a product name and price.", "warning")
             return
         code = generator.generate_unique_code(category_code, db.check_code_exists)
         if dfa.validate(code)["is_valid"] and db.insert_product(code, name, float(amount), category_code):
             render_preview(code)
             update_catalog()
             refresh_telemetry()
-            ui.notify("Product successfully registered into inventory", type="positive", timeout=2500)
+            notify_dark("Product successfully registered into inventory", "check_circle")
         else:
-            ui.notify("Product could not be registered in the database.", type="negative", timeout=2500)
+            notify_dark("Product could not be registered in the database.", "error")
         refresh_connection()
 
     async def scan_catalog_code(code: str) -> None:
@@ -391,9 +433,9 @@ def build_ui() -> None:
     def delete_catalog_product(product_id: int) -> None:
         if db.delete_product(product_id):
             update_catalog()
-            ui.notify("Product deleted", type="positive", timeout=2500)
+            notify_dark("Product deleted", "check_circle")
         else:
-            ui.notify("Product could not be deleted", type="negative", timeout=2500)
+            notify_dark("Product could not be deleted", "error")
 
     async def handle_scan_event(event: Any) -> None:
         await scan_catalog_code(str(event.args))
