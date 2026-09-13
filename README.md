@@ -18,14 +18,14 @@ CS-2026-104
 HR-2024-999
 ```
 
-In plain terms, a code has a two-letter department, a four-digit year or batch value, and a three-digit serial number. The DFA accepts the code only when every character appears in the right place.
+In plain terms, a code has a two-letter product category, a four-digit year or batch value, and a three-digit serial number. The supported categories are `IT` (IT Equipment), `EL` (Electronics), `PR` (Peripherals), `NW` (Networking), and `OF` (Office Hardware). The DFA accepts the code only when every character appears in the right place.
 
 ## Features
 
 - A table-driven DFA that does not rely on regular expressions.
 - Alphabet checking and immediate halting when the machine reaches `q_trap`.
 - A minimized state layout from `q0` through `q11`, plus the dead state.
-- A native dark-mode interface with three simple work areas: scanning, registration, and inventory.
+- A native dark-mode interface with three simple tabs: `SCANNER & LOOKUP`, `REGISTER PRODUCT`, and `INVENTORY CATALOG`.
 - A live ticker trace that shows each character and its state transition.
 - MySQL storage for registered products and validation history.
 - A searchable catalog with quick scan and delete actions.
@@ -131,7 +131,7 @@ test product directly from the table.
 ### Register New Product
 
 1. Enter a product name and PHP price.
-2. Choose a department code.
+2. Choose a product category: IT Equipment, Electronics, Peripherals, Networking, or Office Hardware.
 3. Click `Generate Code & Register Product`.
 
 The app generates a code, checks it with `MinimizedDFA`, and saves it to `products` only after it passes validation. The inventory list refreshes as soon as registration succeeds.

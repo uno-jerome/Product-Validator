@@ -38,14 +38,15 @@ class MinimizedDFA:
 		for step, char in enumerate(code, start=1):
 			from_state = current_state
 			if char not in self.sigma:
-				error = "Alphabet violation"
+				error = f"Alphabet Violation: Symbol '{char}' not in Sigma"
 				current_state = self.trap_state
 			else:
-				current_state = self.transitions.get(current_state, {}).get(
-					char, self.trap_state
-				)
-				if current_state == self.trap_state:
-					error = "Invalid transition"
+				transition = self.transitions.get(current_state, {}).get(char)
+				if transition is None:
+					error = f"Syntax Violation: Unexpected '{char}' at state {current_state}"
+					current_state = self.trap_state
+				else:
+					current_state = transition
 			steps.append(
 				{
 					"step": step,
@@ -59,8 +60,9 @@ class MinimizedDFA:
 
 		is_valid = current_state == self.accept_state
 		if not is_valid and current_state != self.trap_state:
+			incomplete_state = current_state
 			current_state = self.trap_state
-			error = "Incomplete product code"
+			error = f"Syntax Violation: Incomplete input at state {incomplete_state}"
 		return {
 			"is_valid": is_valid,
 			"halt_state": current_state,

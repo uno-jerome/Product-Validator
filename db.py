@@ -264,3 +264,30 @@ def delete_product(product_id: int) -> bool:
 				connection.close()
 			except Exception:
 				pass
+
+
+def check_code_exists(code: str) -> bool:
+	"""Return whether a product code is already registered."""
+	connection: Connection | None = None
+	cursor: Any = None
+	try:
+		connection = pymysql.connect(**DB_CONFIG)
+		cursor = connection.cursor()
+		cursor.execute(
+			"SELECT 1 FROM products WHERE product_code = %s LIMIT 1",
+			(code,),
+		)
+		return cursor.fetchone() is not None
+	except Exception:
+		return False
+	finally:
+		if cursor is not None:
+			try:
+				cursor.close()
+			except Exception:
+				pass
+		if connection is not None:
+			try:
+				connection.close()
+			except Exception:
+				pass
