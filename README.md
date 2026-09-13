@@ -1,6 +1,6 @@
 # Product Code Validator - What's your DFA
 
-A COM243 Formal Languages and Automata Theory simulator that validates product codes with a minimized, table-driven Deterministic Finite Automaton (DFA). The project also provides a native NiceGUI interface for product registration, product lookup, live DFA tracing, and MySQL audit logging.
+This is a small COM243 simulator built to make a Deterministic Finite Automaton easier to see and understand. Enter a product code, watch it move through the DFA one character at a time, and see whether it reaches the accepting state. The same app also handles product registration, inventory lookup, and validation history through a native NiceGUI interface.
 
 ## Product Code Language
 
@@ -18,24 +18,18 @@ CS-2026-104
 HR-2024-999
 ```
 
-The DFA accepts exactly two uppercase category letters, a four-digit year or batch value, and a three-digit serial number.
+In plain terms, a code has a two-letter department, a four-digit year or batch value, and a three-digit serial number. The DFA accepts the code only when every character appears in the right place.
 
 ## Features
 
-- Pure dictionary-driven DFA validation with no regular expressions.
-- Alphabet validation for uppercase letters, digits, and `-`.
-- Immediate transition logging and halting at `q_trap`.
-- Minimized state topology from `q0` through `q11`, plus `q_trap`.
-- Native NiceGUI application with dark mode.
-- Product lookup and DFA scanning workflow.
-- Product registration workflow for categories `IT`, `HR`, `CS`, `MK`, and `FN`.
-- Floating navigation for `SCANNER & LOOKUP`, `REGISTER PRODUCT`, and `INVENTORY CATALOG`.
-- Searchable inventory catalog with product counts, refresh, and styled scan/delete actions.
-- Cross-tab catalog refresh after successful product registration.
-- Animated ticker-tape, character-by-character DFA transition trace.
-- MySQL persistence for products and validation logs.
-- Clickable live UniServer connection status with latency notifications.
-- Scanner-scoped telemetry table showing the latest ten validation runs.
+- A table-driven DFA that does not rely on regular expressions.
+- Alphabet checking and immediate halting when the machine reaches `q_trap`.
+- A minimized state layout from `q0` through `q11`, plus the dead state.
+- A native dark-mode interface with three simple work areas: scanning, registration, and inventory.
+- A live ticker trace that shows each character and its state transition.
+- MySQL storage for registered products and validation history.
+- A searchable catalog with quick scan and delete actions.
+- A connection badge that can be clicked to check UniServer and report latency.
 
 ## Project Layout
 
@@ -56,14 +50,14 @@ ProductValidator/
 `-- README.md
 ```
 
-The `.github/` directory and instruction files are intentionally excluded by `.gitignore`.
+The `.github/` directory and instruction files are intentionally excluded by `.gitignore` in this local project setup.
 
 ## Requirements
 
 - Python 3.10 or newer
 - MySQL 5.7 or newer
-- UniServer or another MySQL server listening on port `3306`
-- MySQL credentials matching the project configuration:
+- UniServer, or another MySQL server listening on port `3306`
+- A MySQL user that matches the current local configuration:
   - Host: `127.0.0.1`
   - Port: `3306`
   - User: `root`
@@ -72,7 +66,7 @@ The `.github/` directory and instruction files are intentionally excluded by `.g
 
 ## Installation
 
-Create and activate a virtual environment, then install the dependencies:
+From the project folder, create a virtual environment and install the dependencies:
 
 ```powershell
 python -m venv .venv
@@ -80,7 +74,7 @@ python -m venv .venv
 python -m pip install -r requirements.txt
 ```
 
-On systems where script execution is restricted, run the project with the virtual-environment interpreter directly:
+If PowerShell does not allow activation scripts, you can use the environment's Python executable directly:
 
 ```powershell
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
@@ -88,7 +82,7 @@ On systems where script execution is restricted, run the project with the virtua
 
 ## Database Setup
 
-Start MySQL or UniServer on port `3306`, then execute `schema.sql` using SQLyog, the MySQL client, or another SQL tool:
+Start MySQL or UniServer on port `3306`. Then run `schema.sql` from SQLyog, the MySQL client, or another SQL tool:
 
 ```sql
 source schema.sql;
@@ -99,11 +93,11 @@ The schema creates:
 - `products`: product code, name, price, category, and registration timestamp.
 - `validation_logs`: input code, ACCEPTED or REJECTED verdict, halt state, failure reason, and timestamp.
 
-The application is designed to remain usable when MySQL is unavailable. Database operations return safe values such as `False`, `None`, or an empty list instead of crashing the UI.
+The UI can still open when MySQL is unavailable. The database layer reports safe fallback values such as `False`, `None`, or an empty list, and the header makes the connection state visible.
 
 ## Running the Application
 
-From the repository root:
+From the repository root, run:
 
 ```powershell
 .\.venv\Scripts\python.exe main.py
@@ -116,34 +110,31 @@ The native window is configured as:
 Product Code Validator - What's your DFA
 ```
 
-The header status badge displays `Database Connected` or `Database Offline`.
-Clicking it rechecks MySQL and reports the connection latency.
+The app opens in a `1280 x 880` native window. The header badge shows whether the database is connected; clicking it checks again and reports the connection latency.
 
 ### Product Lookup & DFA Scanner
 
-1. Enter a product code or use the default `IT-2026-001`.
-2. Select `Scan & Validate`.
-3. Watch the character ticker and glowing state-transition chips.
-4. For accepted syntax, view the registered product details if the code exists in MySQL.
-5. Review the validation run in the scanner tab's audit telemetry panel.
+1. Enter a product code, or start with the default `IT-2026-001`.
+2. Click `Scan & Validate`.
+3. Follow the character ticker as each symbol moves through the state machine.
+4. If the syntax is accepted, the app looks for matching product details in MySQL.
+5. Check the audit telemetry panel below the scanner for the saved run.
 
-Quick test controls provide valid, prefix-error, year-error, and illegal-symbol inputs.
+The quick-test buttons load a valid code or introduce a prefix, year, or symbol error.
 
 ### Inventory Catalog
 
-The `INVENTORY CATALOG` tab lists all registered products in descending ID order.
-Use the search field to filter by product name or code, `Refresh Catalog` to reload
-the database, `Scan` to transfer a code to the scanner and run validation, or
-`Delete` to remove a test product.
+The `INVENTORY CATALOG` tab is the quickest way to browse what is in the database.
+Search by product name or code, refresh the list, scan a code in the DFA, or delete a
+test product directly from the table.
 
 ### Register New Product
 
-1. Enter a product name.
-2. Enter a PHP price.
-3. Select a category.
-4. Select `Generate Code & Register Product`.
+1. Enter a product name and PHP price.
+2. Choose a department code.
+3. Click `Generate Code & Register Product`.
 
-The application generates a code, validates it through `MinimizedDFA`, and inserts it into the `products` table when valid.
+The app generates a code, checks it with `MinimizedDFA`, and saves it to `products` only after it passes validation. The inventory list refreshes as soon as registration succeeds.
 
 ## DFA State Model
 
@@ -182,7 +173,7 @@ Run the complete verification suite:
 .\.venv\Scripts\python.exe -m pytest tests/ -q
 ```
 
-The suite covers the COM243 rubric's ten accepted examples, ten rejected examples, minimized transition topology, generator corruption modes, and immediate halt behavior after entering `q_trap`.
+The suite covers the COM243 rubric's ten accepted examples, ten rejected examples, the transition topology, generator corruption modes, and the rule that tracing stops as soon as the machine enters `q_trap`.
 
 Compile the application modules without starting the UI:
 
