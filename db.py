@@ -13,7 +13,7 @@ DB_CONFIG: dict[str, Any] = {
 	"port": 3306,
 	"user": "root",
 	"password": "root",
-	"db": "automata_validator",
+	"database": "automata_validator",
 	"connect_timeout": 5,
 	"read_timeout": 5,
 	"write_timeout": 5,
@@ -171,6 +171,88 @@ def get_product_by_code(code: str) -> dict | None:
 		return dict(product) if product is not None else None
 	except Exception:
 		return None
+	finally:
+		if cursor is not None:
+			try:
+				cursor.close()
+			except Exception:
+				pass
+		if connection is not None:
+			try:
+				connection.close()
+			except Exception:
+				pass
+
+
+def get_all_products() -> list[dict]:
+	"""Return formatted catalog rows, or an empty list when MySQL is unavailable."""
+	connection: Connection | None = None
+	cursor: Any = None
+	try:
+		connection = pymysql.connect(**DB_CONFIG)
+		cursor = connection.cursor()
+		cursor.execute(
+			"""
+			SELECT id, product_code, product_name, price, category, created_at
+			FROM products
+			ORDER BY id DESC
+			"""
+		)
+		products: list[dict] = []
+		for row in cursor.fetchall():
+			if isinstance(row, dict):
+				product_id = row.get("id")
+				product_code = row.get("product_code")
+				product_name = row.get("product_name")
+				product_price = row.get("price")
+				product_category = row.get("category")
+				created_at = row.get("created_at")
+			else:
+				product_id, product_code, product_name, product_price, product_category, created_at = row
+			products.append(
+				{
+					"id": product_id,
+					"product_code": product_code,
+					"product_name": product_name,
+					"price": f"PHP {float(product_price):,.2f}",
+					"raw_price": float(product_price),
+					"category": product_category,
+					"created_at": str(created_at),
+				}
+			)
+		return products
+	except Exception:
+		return []
+	finally:
+		if cursor is not None:
+			try:
+				cursor.close()
+			except Exception:
+				pass
+		if connection is not None:
+			try:
+				connection.close()
+			except Exception:
+				pass
+
+
+def delete_product(product_id: int) -> bool:
+	"""Delete a product by ID, returning False on database failure."""
+	connection: Connection | None = None
+	cursor: Any = None
+	try:
+		connection = pymysql.connect(**DB_CONFIG)
+		cursor = connection.cursor()
+		cursor.execute("DELETE FROM products WHERE id = %s", (product_id,))
+		connection.commit()
+		return True
+	except Exception:
+		if connection is not None:
+			try:
+				connection.rollback()
+			except Exception:
+				pass
+		return False
 	finally:
 		if cursor is not None:
 			try:

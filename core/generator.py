@@ -17,6 +17,10 @@ class ProductCodeGenerator:
 		serial = random.randint(1, 999)
 		return f"{category}-{year:04d}-{serial:03d}"
 
+	def generate_for_category(self, category: str) -> str:
+		"""Generate a current-year code for a selected department category."""
+		return self.generate_code(category)
+
 	def generate_corrupted(self, corruption_type: str) -> str:
 		"""Return a valid-format code with the requested deliberate defect."""
 		valid_code = self.generate_code()

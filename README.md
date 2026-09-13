@@ -29,10 +29,13 @@ The DFA accepts exactly two uppercase category letters, a four-digit year or bat
 - Native NiceGUI application with dark mode.
 - Product lookup and DFA scanning workflow.
 - Product registration workflow for categories `IT`, `HR`, `CS`, `MK`, and `FN`.
-- Animated, character-by-character DFA transition trace.
+- Floating navigation for `SCANNER & LOOKUP`, `REGISTER PRODUCT`, and `INVENTORY CATALOG`.
+- Searchable inventory catalog with product counts, refresh, and styled scan/delete actions.
+- Cross-tab catalog refresh after successful product registration.
+- Animated ticker-tape, character-by-character DFA transition trace.
 - MySQL persistence for products and validation logs.
-- Live UniServer connection status indicator.
-- Telemetry table showing the latest ten validation runs.
+- Clickable live UniServer connection status with latency notifications.
+- Scanner-scoped telemetry table showing the latest ten validation runs.
 
 ## Project Layout
 
@@ -109,19 +112,29 @@ From the repository root:
 The native window is configured as:
 
 ```text
-1150 x 850
+1280 x 880
 Product Code Validator - What's your DFA
 ```
+
+The header status badge displays `Database Connected` or `Database Offline`.
+Clicking it rechecks MySQL and reports the connection latency.
 
 ### Product Lookup & DFA Scanner
 
 1. Enter a product code or use the default `IT-2026-001`.
-2. Select `Validate & Search`.
-3. Watch the character-by-character transition trace.
+2. Select `Scan & Validate`.
+3. Watch the character ticker and glowing state-transition chips.
 4. For accepted syntax, view the registered product details if the code exists in MySQL.
-5. Review the validation run in the telemetry table.
+5. Review the validation run in the scanner tab's audit telemetry panel.
 
 Quick test controls provide valid, prefix-error, year-error, and illegal-symbol inputs.
+
+### Inventory Catalog
+
+The `INVENTORY CATALOG` tab lists all registered products in descending ID order.
+Use the search field to filter by product name or code, `Refresh Catalog` to reload
+the database, `Scan` to transfer a code to the scanner and run validation, or
+`Delete` to remove a test product.
 
 ### Register New Product
 
@@ -187,6 +200,10 @@ save_log(code, verdict, halt_state, reason) -> bool
 get_recent_logs(limit=10) -> list[dict]
 insert_product(code, name, price, category) -> bool
 get_product_by_code(code) -> dict | None
+get_all_products() -> list[dict]
+delete_product(product_id) -> bool
 ```
 
-All SQL statements use PyMySQL parameter binding, and connections, cursors, transactions, and failures are handled inside the database layer.
+All SQL statements use PyMySQL parameter binding with `database="automata_validator"`.
+Connections, cursors, transactions, and failures are handled inside the database layer,
+so offline MySQL returns safe fallback values instead of crashing the UI.
