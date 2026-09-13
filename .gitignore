@@ -38,8 +38,11 @@ dist/
 *.log
 *.sql.log
 
-# Keep project source, tests, and GitHub configuration tracked
+# Keep project source and tests tracked
 !/core/
 !/database/
 !/tests/
-!/.github/
+
+# Project instructions and GitHub configuration
+.github/
+*.instructions.md
