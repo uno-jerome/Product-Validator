@@ -1,0 +1,4 @@
+nicegui
+pywebview
+pymysql
+pytest

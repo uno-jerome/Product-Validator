@@ -1,0 +1,45 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Coverage and test reports
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+.pytest_cache/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build and distribution artifacts
+build/
+dist/
+*.egg-info/
+
+# Application and database logs
+*.log
+*.sql.log
+
+# Keep project source, tests, and GitHub configuration tracked
+!/core/
+!/database/
+!/tests/
+!/.github/

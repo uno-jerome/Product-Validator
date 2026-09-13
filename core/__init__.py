@@ -1,0 +1,1 @@
+"""Core automata components for the product code validator."""

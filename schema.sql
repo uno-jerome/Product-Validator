@@ -1,0 +1,20 @@
+CREATE DATABASE IF NOT EXISTS automata_validator;
+USE automata_validator;
+
+CREATE TABLE IF NOT EXISTS products (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    product_code VARCHAR(16) UNIQUE NOT NULL,
+    product_name VARCHAR(100) NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    category VARCHAR(10) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS validation_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    input_code VARCHAR(32) NOT NULL,
+    verdict ENUM('ACCEPTED', 'REJECTED') NOT NULL,
+    halt_state VARCHAR(16) NOT NULL,
+    failure_reason VARCHAR(255) NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
