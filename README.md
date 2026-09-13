@@ -1,4 +1,4 @@
-# Product Code Validator — What's your DFA
+# Product Code Validator - What's your DFA
 > **COM243**  
 > Desktop Inventory Management & Minimized DFA Simulator
 
