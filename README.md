@@ -58,14 +58,24 @@ $$R = ([A\text{-}Z][A\text{-}Z]) \cdot '-' \cdot ([0\text{-}9][0\text{-}9][0\tex
 ### Database Setup
 Ensure MySQL/MariaDB is running on port `3306`, then import `schema.sql`:
 
-* **Windows (UniServer Zero XIII):** Start MySQL, open phpMyAdmin, create `automata_validator`, and import `schema.sql`.
-* **Linux (Ubuntu / Debian):**
+* **Windows (UniServer Zero XIII):**  
+  Start MySQL, open phpMyAdmin, create `automata_validator`, and import `schema.sql`.
+
+* **Linux (Ubuntu / Debian — Native MariaDB):**
   ```bash
   sudo apt update && sudo apt install -y mariadb-server
   sudo systemctl start mariadb
   sudo mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS automata_validator;"
   sudo mysql -u root -p automata_validator < schema.sql
   ```
+
+* **Linux Optional (Standalone phpMyAdmin via PHP CLI — No Apache):**  
+  To view tables in the browser without installing or configuring Apache:
+  ```bash
+  sudo apt install -y phpmyadmin php-cli php-mbstring php-mysqli
+  php -S 127.0.0.1:8080 -t /usr/share/phpmyadmin
+  ```
+  *Open `http://127.0.0.1:8080` and log in with your MySQL/MariaDB credentials.*
 
 ### Application Setup
 ```bash
