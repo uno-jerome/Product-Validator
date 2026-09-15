@@ -1,7 +1,7 @@
 # Product Code Validator — What's your DFA
 > **COM243**  
 
-A native desktop application built with Python, NiceGUI, and MySQL that validates structured inventory product codes using a formally defined and minimized Deterministic Finite Automaton (DFA)
+A native desktop application built with Python, NiceGUI, and MySQL that validates structured inventory product codes using a formally defined and minimized Deterministic Finite Automaton (DFA).
 
 ## Table of Contents
 
@@ -102,12 +102,12 @@ Product-Validator/
 ## 5. Setup & Installation
 
 ### Prerequisites
-* **Python 3.10+**
-* **UniServer Zero XIII** (or local MySQL instance running on port `3306`)
+* Python 3.10+
+* UniServer Zero XIII (or local MySQL instance running on port `3306`)
 
 ### Step 1: Database Setup (UniServer Zero)
-1. Start **UniServer Zero** and ensure MySQL is running on port `3306`.
-2. Open **phpMyAdmin** (`http://localhost/us_opt1/` or your local phpMyAdmin URL).
+1. Start UniServer Zero and ensure MySQL is running on port `3306`.
+2. Open phpMyAdmin (`http://localhost/us_opt1/` or your local phpMyAdmin URL).
 3. Create the database and import `schema.sql`:
    ```sql
    CREATE DATABASE IF NOT EXISTS automata_validator;
@@ -124,7 +124,7 @@ Product-Validator/
 ### Step 2: Virtual Environment & Dependencies
 ```bash
 # Clone the repository
-git clone https://github.com/uno-jerome/Product-Validator.git
+git clone [https://github.com/uno-jerome/Product-Validator.git](https://github.com/uno-jerome/Product-Validator.git)
 cd Product-Validator
 
 # Create a virtual environment
