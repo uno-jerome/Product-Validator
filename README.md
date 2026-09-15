@@ -9,23 +9,40 @@ A native inventory manager and interactive DFA simulator built with Python, Nice
 
 The target language $L$ validates product serial codes categorized by hardware domain:
 
-$$\text{Format: } [A\text{-}Z]^2 - [0\text{-}9]^4 - [0\text{-}9]^3 \quad (\text{e.g., } \texttt{IT-2026-001})$$
+* **Format:** `[A-Z]² - [0-9]⁴ - [0-9]³` *(e.g., `IT-2026-001`)*
+* **Regular Expression:** `([A-Z]{2})-([0-9]{4})-([0-9]{3})`
 
-$$R = ([A\text{-}Z][A\text{-}Z]) \cdot '-' \cdot ([0\text{-}9][0\text{-}9][0\text{-}9][0\text{-}9]) \cdot '-' \cdot ([0\text{-}9][0\text{-}9][0\text{-}9])$$
+### 5-Tuple Definition: M = (Q, Σ, δ, q₀, F)
 
-### 5-Tuple Definition ($M = (Q, \Sigma, \delta, q_0, F)$)
-* **States ($Q$):** $\{q_0, q_1, \dots, q_{11}, q_{\text{trap}}\}$
-* **Alphabet ($\Sigma$):** $\{A\dots Z\} \cup \{0\dots 9\} \cup \{'-'\}$ ($|\Sigma| = 37$)
-* **Start State ($q_0$):** $q_0$
-* **Accepting State ($F$):** $\{q_{11}\}$
-* **Transition Function ($\delta$):** Pure dictionary lookups mapping $(q_i, \sigma) \to q_{i+1}$. Any invalid symbol or syntax breach diverts to $q_{\text{trap}}$.
+* **States ($Q$):** $\{q_0, q_1, q_2, \dots, q_{11}, q_{\text{trap}}\}$
+* **Alphabet ($\Sigma$):** $\{A\dots Z\} \cup \{0\dots 9\} \cup \{'-'\} \quad (\vert{}\Sigma\vert{} = 37)$
+* **Start State:** $q_0$
+* **Accepting / Final State ($F$):** $\{q_{11}\}$
+* **Transition Function ($\delta$):** Static dictionary mapping $(q_i, \sigma) \to q_{i+1}$. Any illegal symbol or unexpected token diverts immediately to $q_{\text{trap}}$.
 
-```text
-  [A-Z]       [A-Z]        '-'        [0-9]       [0-9]       [0-9]       [0-9]        '-'        [0-9]       [0-9]       [0-9]
-(q0) ───► (q1) ───► (q2) ───► (q3) ───► (q4) ───► (q5) ───► (q6) ───► (q7) ───► (q8) ───► (q9) ───► (q10) ───► ((q11))
-  │         │         │         │         │         │         │         │         │         │         │
-  └─────────┴─────────┴─────────┴─────────┴─────────┴─────────┴─────────┴─────────┴─────────┴─────────┴──► [q_trap]
+```mermaid
+flowchart LR
+    %% Row 1: Prefix & Production Year
+    q0((q0)) -->|"[A-Z]"| q1((q1))
+    q1 -->|"[A-Z]"| q2((q2))
+    q2 -->|"'-'"| q3((q3))
+    q3 -->|"[0-9]"| q4((q4))
+    q4 -->|"[0-9]"| q5((q5))
+    q5 -->|"[0-9]"| q6((q6))
+
+    %% Turnaround connector
+    q6 -->|"[0-9]"| q7((q7))
+
+    %% Row 2: Delimiter & Serial Number
+    q7 -->|"'-'"| q8((q8))
+    q8 -->|"[0-9]"| q9((q9))
+    q9 -->|"[0-9]"| q10((q10))
+    q10 -->|"[0-9]"| q11(((q11)))
+
+    %% Trap indicator
+    q_trap[q_trap]
 ```
+> **Note:** Any invalid symbol $\sigma \notin \Sigma$ or unexpected transition immediately diverts execution to `q_trap`.
 
 ### Domain Prefix Mapping
 
