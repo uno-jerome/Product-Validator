@@ -3,6 +3,25 @@
 
 A native desktop application built with Python, NiceGUI, and MySQL that validates structured inventory product codes using a formally defined and minimized Deterministic Finite Automaton (DFA)
 
+## Table of Contents
+
+- [Product Code Validator — What's your DFA](#product-code-validator--whats-your-dfa)
+  - [Table of Contents](#table-of-contents)
+  - [1. Formal Language Specification](#1-formal-language-specification)
+    - [Regular Expression (RE)](#regular-expression-re)
+    - [Formal 5-Tuple DFA Definition](#formal-5-tuple-dfa-definition)
+  - [2. Category Domain Schema](#2-category-domain-schema)
+  - [3. Project Architecture](#3-project-architecture)
+  - [4. Syllabus Compliance Matrix](#4-syllabus-compliance-matrix)
+  - [5. Setup \& Installation](#5-setup--installation)
+    - [Prerequisites](#prerequisites)
+    - [Step 1: Database Setup (UniServer Zero)](#step-1-database-setup-uniserver-zero)
+    - [Step 2: Virtual Environment \& Dependencies](#step-2-virtual-environment--dependencies)
+  - [6. Running the Project](#6-running-the-project)
+    - [Standalone Desktop Application](#standalone-desktop-application)
+    - [Automated Unit Tests](#automated-unit-tests)
+  - [7. Application User Flows](#7-application-user-flows)
+
 ---
 
 ## 1. Formal Language Specification
@@ -66,7 +85,7 @@ Product-Validator/
 
 ---
 
-## 4. COM243 Syllabus Compliance Matrix
+## 4. Syllabus Compliance Matrix
 
 | Feature | Requirement Description | Implementation Detail |
 | :---: | :--- | :--- |

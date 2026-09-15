@@ -25,6 +25,8 @@ coverage.xml
 
 # IDE and editor files
 .vscode/
+.vscode-counter/
+.vscodecounter/
 .idea/
 *.swp
 *.swo
