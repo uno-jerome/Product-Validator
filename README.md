@@ -61,7 +61,7 @@ flowchart LR
 
 ---
 
-## 2. Course Compliance Matrix (COM243)
+## 2. Course Compliance Matrix
 
 | # | Requirement | Implementation Detail |
 | :-: | :--- | :--- |
