@@ -80,7 +80,7 @@ Ensure MySQL/MariaDB is running on port `3306`, then import `schema.sql`:
 ### Application Setup
 ```bash
 # 1. Clone & enter repository
-git clone [https://github.com/uno-jerome/Product-Validator.git](https://github.com/uno-jerome/Product-Validator.git)
+git clone https://github.com/uno-jerome/Product-Validator.git
 cd Product-Validator
 
 # 2. Setup virtual environment
