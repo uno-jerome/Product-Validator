@@ -22,28 +22,33 @@ The target language $L$ validates product serial codes categorized by hardware d
 
 ```mermaid
 flowchart LR
-    %% Row 1: Prefix & Production Year
-    q0((q0)) -->|"[A-Z]"| q1((q1))
-    q1 -->|"[A-Z]"| q2((q2))
-    q2 -->|"'-'"| q3((q3))
-    q3 -->|"[0-9]"| q4((q4))
-    q4 -->|"[0-9]"| q5((q5))
-    q5 -->|"[0-9]"| q6((q6))
+    %% Category 1: Prefix
+    subgraph G1 ["Prefix Domain"]
+        q0((q0)) -->|"[A-Z]"| q1((q1))
+        q1 -->|"[A-Z]"| q2((q2))
+    end
 
-    %% Turnaround connector
-    q6 -->|"[0-9]"| q7((q7))
+    %% Category 2: Year
+    subgraph G2 ["Production Year"]
+        q2 -->|"'-'"| q3((q3))
+        q3 -->|"[0-9]"| q4((q4))
+        q4 -->|"[0-9]"| q5((q5))
+        q5 -->|"[0-9]"| q6((q6))
+        q6 -->|"[0-9]"| q7((q7))
+    end
 
-    %% Row 2: Delimiter & Serial Number
-    q7 -->|"'-'"| q8((q8))
-    q8 -->|"[0-9]"| q9((q9))
-    q9 -->|"[0-9]"| q10((q10))
-    q10 -->|"[0-9]"| q11(((q11)))
+    %% Category 3: Serial
+    subgraph G3 ["Serial Number"]
+        q7 -->|"'-'"| q8((q8))
+        q8 -->|"[0-9]"| q9((q9))
+        q9 -->|"[0-9]"| q10((q10))
+        q10 -->|"[0-9]"| q11(((q11)))
+    end
 
-    %% Trap indicator
-    q_trap[q_trap]
+    %% Dead / Trap State
+    q_trap((q_trap)) -->|"Σ"| q_trap
 ```
-> **Note:** Any invalid symbol $\sigma \notin \Sigma$ or unexpected transition immediately diverts execution to `q_trap`.
-
+> **Note on Trap Transitions:** For any state $q_i$ ($0 \le i \le 10$), reading any character other than the designated valid transition symbol directs the machine to the dead state[cite: 2]: $\delta(q_i, \text{other}) = q_{\text{trap}}$, where $\delta(q_{\text{trap}}, \sigma) = q_{\text{trap}}$ for all $\sigma \in \Sigma$[cite: 2].
 ### Domain Prefix Mapping
 
 | Prefix | Category | Example Assets |
